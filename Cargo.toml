@@ -1,0 +1,9 @@
+[package]
+name = "trta"
+version = "0.1.0"
+authors = ["Takuto Nanjo <hoge@hoge.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
