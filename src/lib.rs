@@ -48,7 +48,7 @@ impl Trta<i32> for [i32] {
         for i in 1..period {
             v.push(self.to_vec().into_iter().take(i).collect::<Vec<_>>());
         }
-        // create shorter vectors than period
+        // create vectors shorter than period
 
         for i in 0..=(self.len() - period) {
             v.push(self.to_vec().into_iter().skip(i).take(period).collect::<Vec<_>>());
@@ -99,7 +99,7 @@ impl Trta<f64> for [f64] {
         for i in 1..period {
             v.push(self.to_vec().into_iter().take(i).collect::<Vec<_>>());
         }
-        // create shorter vectors than period
+        // create vectors shorter than period
 
         for i in 0..=(self.len() - period) {
             v.push(self.to_vec().into_iter().skip(i).take(period).collect::<Vec<_>>());
