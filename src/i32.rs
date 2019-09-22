@@ -45,7 +45,15 @@ impl Trta<i32> for [i32] {
     }
 
     fn window_under_zero_value(&self, period: usize) -> Vec<Vec<i32>> {
-        let mut v = vec![0; period - 1];
+        let mut v = vec![0; period - 1];  // std::vec::Vec<{integer}>
+
+        v.extend(self);
+
+        v.window(period)
+    }
+
+    fn window_under_first_value(&self, period: usize) -> Vec<Vec<i32>> {
+        let mut v = vec![self[0]; period - 1];
 
         v.extend(self);
 
@@ -106,5 +114,15 @@ mod tests {
                 [[0, 0, 1], [0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
         assert_eq!(vec![1, 2, 3, 4, 5].window_under_zero_value(3),
                 [[0, 0, 1], [0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+    }
+
+    #[test]
+    fn test_window_under_first_value() {
+        assert_eq!([1, 2, 3, 4, 5].window_under_first_value(3),
+                [[1, 1, 1], [1, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!((&[1, 2, 3, 4, 5]).window_under_first_value(3),
+                [[1, 1, 1], [1, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!(vec![1, 2, 3, 4, 5].window_under_first_value(3),
+                [[1, 1, 1], [1, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
     }
 }

@@ -51,6 +51,14 @@ impl Trta<f64> for [f64] {
 
         v.window(period)
     }
+
+    fn window_under_first_value(&self, period: usize) -> Vec<Vec<f64>> {
+        let mut v = vec![self[0]; period - 1];
+
+        v.extend(self);
+
+        v.window(period)
+    }
 }
 
 #[cfg(test)]
@@ -117,6 +125,19 @@ mod tests {
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
         assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero_value(3),
                 [[0.0, 0.0, 1.0], [0.0, 1.0, 2.0],
+                [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
+    }
+
+    #[test]
+    fn test_window_under_first_value() {
+        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_first_value(3),
+                [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
+                [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
+        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_first_value(3),
+                [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
+                [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
+        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_first_value(3),
+                [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
     }
 }
