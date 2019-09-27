@@ -1,8 +1,8 @@
 // f64.rs
 
-use crate::Trta;
+use crate::TrTA;
 
-impl Trta<f64> for [f64] {
+impl TrTA<f64> for [f64] {
     fn sum(&self) -> f64 {
         self.iter().sum()
     }
@@ -58,6 +58,14 @@ impl Trta<f64> for [f64] {
         v.extend(self);
 
         v.window(period)
+    }
+
+    fn sma(&self, period: usize) -> Vec<f64> {
+        vec![0.0]
+    }
+
+    fn sma_calced(&self, period: usize, begin: usize, latest: &[f64]) -> Vec<f64> {
+        vec![0.0]
     }
 }
 

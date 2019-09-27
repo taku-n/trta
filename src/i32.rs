@@ -1,8 +1,8 @@
 // i32.rs
 
-use crate::Trta;
+use crate::TrTA;
 
-impl Trta<i32> for [i32] {
+impl TrTA<i32> for [i32] {
     fn sum(&self) -> i32 {
         self.iter().sum()
     }
@@ -58,6 +58,14 @@ impl Trta<i32> for [i32] {
         v.extend(self);
 
         v.window(period)
+    }
+
+    fn sma(&self, period: usize) -> Vec<i32> {
+        vec![0]
+    }
+
+    fn sma_calced(&self, period: usize, begin: usize, latest: &[i32]) -> Vec<i32> {
+        vec![0]
     }
 }
 

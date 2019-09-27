@@ -3,7 +3,7 @@
 mod i32;
 mod f64;
 
-pub trait Trta<T> {
+pub trait TrTA<T> {
     fn sum(&self) -> T;
     fn ave(&self) -> T;
 
@@ -21,4 +21,8 @@ pub trait Trta<T> {
 
     fn window_under_first_value(&self, period: usize) -> Vec<Vec<T>>;
     // (1 2 3 4 5) => ((1 1 1) (1 1 2) (1 2 3) (2 3 4) (3 4 5))
+
+    fn sma(&self, period: usize) -> Vec<T>;
+    fn sma_calced(&self, period: usize, begin: usize, latest: &[T]) -> Vec<T>;
+    // "latest" is the latest calculated SMA values to omit recalculations.
 }
