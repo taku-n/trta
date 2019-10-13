@@ -2,6 +2,7 @@
 
 mod i32;
 mod f64;
+pub mod trta;
 
 pub trait TrTA<T> {
     fn sum(&self) -> T;

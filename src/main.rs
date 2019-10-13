@@ -1,6 +1,7 @@
 // main.rs
 
 use trta::TrTA;
+use trta::trta::I32;
 
 fn main() {
     let v = vec![1, 2, 3, 4, 5];
