@@ -44,7 +44,7 @@ impl TrTA<f64> for [f64] {
         v
     }
 
-    fn window_under_zero_value(&self, period: usize) -> Vec<Vec<f64>> {
+    fn window_under_zero_with(&self, period: usize) -> Vec<Vec<f64>> {
         let mut v = vec![0.0; period - 1];
 
         v.extend(self);
@@ -52,7 +52,7 @@ impl TrTA<f64> for [f64] {
         v.window(period)
     }
 
-    fn window_under_first_value(&self, period: usize) -> Vec<Vec<f64>> {
+    fn window_under_head_with(&self, period: usize) -> Vec<Vec<f64>> {
         let mut v = vec![self[0]; period - 1];
 
         v.extend(self);
