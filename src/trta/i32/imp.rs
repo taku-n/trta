@@ -5,7 +5,7 @@ impl I32 for [i32] {
         self.iter().sum()
     }
 
-    fn ave(&self) -> i32 {
+    fn avg(&self) -> i32 {
         self.sum() / self.len() as i32
     }
 
@@ -57,12 +57,85 @@ impl I32 for [i32] {
 
         v.window(period)
     }
+}
 
-    fn sma(&self, period: usize) -> Vec<i32> {
-        vec![0]
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_sum() {
+        assert_eq!([1, 2, 3].sum(), 6);      // array  of f64
+        assert_eq!((&[1, 2, 3]).sum(), 6);   // slice  of f64
+        assert_eq!(vec![1, 2, 3].sum(), 6);  // vector of f64
     }
 
-    fn sma_calced(&self, period: usize, begin: usize, latest: &[i32]) -> Vec<i32> {
-        vec![0]
+    #[test]
+    fn test_avg() {
+        assert_eq!([1, 2, 3].avg(), 2);
+        assert_eq!((&[1, 2, 3]).avg(), 2);
+        assert_eq!(vec![1, 2, 3].avg(), 2);
+    }
+
+    #[test]
+    fn test_window() {
+        assert_eq!([1, 2, 3, 4, 5].window(3),
+                [[1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!((&[1, 2, 3, 4, 5]).window(3),
+                [[1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!(vec![1, 2, 3, 4, 5].window(3),
+                [[1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+    }
+
+    #[test]
+    fn test_window_under() {
+        assert_eq!([1, 2, 3, 4, 5].window_under(3),
+                [vec![1], vec![1, 2],
+                vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
+        assert_eq!((&[1, 2, 3, 4, 5]).window_under(3),
+                [vec![1], vec![1, 2],
+                vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
+        assert_eq!(vec![1, 2, 3, 4, 5].window_under(3),
+                [vec![1], vec![1, 2],
+                vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
+    }
+
+    #[test]
+    fn test_window_under_zero() {
+        assert_eq!([1, 2, 3, 4, 5].window_under_zero(3),
+                [vec![0], vec![0],
+                vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
+        assert_eq!((&[1, 2, 3, 4, 5]).window_under_zero(3),
+                [vec![0], vec![0],
+                vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
+        assert_eq!(vec![1, 2, 3, 4, 5].window_under_zero(3),
+                [vec![0], vec![0],
+                vec![1, 2, 3], vec![2, 3, 4], vec![3, 4, 5]]);
+    }
+
+    #[test]
+    fn test_window_under_zero_with() {
+        assert_eq!([1, 2, 3, 4, 5].window_under_zero_with(3),
+                [[0, 0, 1], [0, 1, 2],
+                [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!((&[1, 2, 3, 4, 5]).window_under_zero_with(3),
+                [[0, 0, 1], [0, 1, 2],
+                [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!(vec![1, 2, 3, 4, 5].window_under_zero_with(3),
+                [[0, 0, 1], [0, 1, 2],
+                [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+    }
+
+    #[test]
+    fn test_window_under_head_with() {
+        assert_eq!([1, 2, 3, 4, 5].window_under_head_with(3),
+                [[1, 1, 1], [1, 1, 2],
+                [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!((&[1, 2, 3, 4, 5]).window_under_head_with(3),
+                [[1, 1, 1], [1, 1, 2],
+                [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
+        assert_eq!(vec![1, 2, 3, 4, 5].window_under_head_with(3),
+                [[1, 1, 1], [1, 1, 2],
+                [1, 2, 3], [2, 3, 4], [3, 4, 5]]);
     }
 }

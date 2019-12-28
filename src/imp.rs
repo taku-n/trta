@@ -1,18 +1,31 @@
-// f64.rs
-
 use crate::TrTA;
 
-impl TrTA<f64> for [f64] {
+impl TrTA for [f64] {
     fn sum(&self) -> f64 {
         self.iter().sum()
     }
 
-    fn ave(&self) -> f64 {
+    fn avg(&self) -> f64 {
         self.sum() / self.len() as f64
     }
 
     fn window(&self, period: usize) -> Vec<Vec<f64>> {
         let mut v: Vec<Vec<f64>> = Vec::new();
+
+        for i in 0..=(self.len() - period) {
+            v.push(self.to_vec().into_iter().skip(i).take(period).collect::<Vec<_>>());
+        }
+
+        v
+    }
+
+    fn window_under(&self, period: usize) -> Vec<Vec<f64>> {
+        let mut v: Vec<Vec<f64>> = Vec::new();
+
+        // create vectors shorter than period
+        for i in 1..period {
+            v.push(self.to_vec().into_iter().take(i).collect::<Vec<_>>());
+        }
 
         for i in 0..=(self.len() - period) {
             v.push(self.to_vec().into_iter().skip(i).take(period).collect::<Vec<_>>());
@@ -29,20 +42,6 @@ impl TrTA<f64> for [f64] {
         v
     }
 
-    fn window_under(&self, period: usize) -> Vec<Vec<f64>> {
-        let mut v: Vec<Vec<f64>> = Vec::new();
-
-        for i in 1..period {
-            v.push(self.to_vec().into_iter().take(i).collect::<Vec<_>>());
-        }
-        // create vectors shorter than period
-
-        for i in 0..=(self.len() - period) {
-            v.push(self.to_vec().into_iter().skip(i).take(period).collect::<Vec<_>>());
-        }
-
-        v
-    }
 
     fn window_under_zero_with(&self, period: usize) -> Vec<Vec<f64>> {
         let mut v = vec![0.0; period - 1];
@@ -64,7 +63,7 @@ impl TrTA<f64> for [f64] {
         vec![0.0]
     }
 
-    fn sma_calced(&self, period: usize, begin: usize, latest: &[f64]) -> Vec<f64> {
+    fn sma_re(&self, period: usize, begin: usize, latest: &[f64]) -> Vec<f64> {
         vec![0.0]
     }
 }
@@ -81,10 +80,10 @@ mod tests {
     }
 
     #[test]
-    fn test_ave() {
-        assert_eq!([1.0, 2.0, 3.0].ave(), 2.0);
-        assert_eq!((&[1.0, 2.0, 3.0]).ave(), 2.0);
-        assert_eq!(vec![1.0, 2.0, 3.0].ave(), 2.0);
+    fn test_avg() {
+        assert_eq!([1.0, 2.0, 3.0].avg(), 2.0);
+        assert_eq!((&[1.0, 2.0, 3.0]).avg(), 2.0);
+        assert_eq!(vec![1.0, 2.0, 3.0].avg(), 2.0);
     }
 
     #[test]
@@ -95,19 +94,6 @@ mod tests {
                 [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
         assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window(3),
                 [[1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
-    }
-
-    #[test]
-    fn test_window_under_zero() {
-        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero(3),
-                [vec![0.0], vec![0.0],
-                vec![1.0, 2.0, 3.0], vec![2.0, 3.0, 4.0], vec![3.0, 4.0, 5.0]]);
-        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_zero(3),
-                [vec![0.0], vec![0.0],
-                vec![1.0, 2.0, 3.0], vec![2.0, 3.0, 4.0], vec![3.0, 4.0, 5.0]]);
-        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero(3),
-                [vec![0.0], vec![0.0],
-                vec![1.0, 2.0, 3.0], vec![2.0, 3.0, 4.0], vec![3.0, 4.0, 5.0]]);
     }
 
     #[test]
@@ -124,27 +110,40 @@ mod tests {
     }
 
     #[test]
-    fn test_window_under_zero_value() {
-        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero_value(3),
+    fn test_window_under_zero() {
+        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero(3),
+                [vec![0.0], vec![0.0],
+                vec![1.0, 2.0, 3.0], vec![2.0, 3.0, 4.0], vec![3.0, 4.0, 5.0]]);
+        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_zero(3),
+                [vec![0.0], vec![0.0],
+                vec![1.0, 2.0, 3.0], vec![2.0, 3.0, 4.0], vec![3.0, 4.0, 5.0]]);
+        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero(3),
+                [vec![0.0], vec![0.0],
+                vec![1.0, 2.0, 3.0], vec![2.0, 3.0, 4.0], vec![3.0, 4.0, 5.0]]);
+    }
+
+    #[test]
+    fn test_window_under_zero_with() {
+        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero_with(3),
                 [[0.0, 0.0, 1.0], [0.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
-        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_zero_value(3),
+        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_zero_with(3),
                 [[0.0, 0.0, 1.0], [0.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
-        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero_value(3),
+        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_zero_with(3),
                 [[0.0, 0.0, 1.0], [0.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
     }
 
     #[test]
-    fn test_window_under_first_value() {
-        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_first_value(3),
+    fn test_window_under_head_with() {
+        assert_eq!([1.0, 2.0, 3.0, 4.0, 5.0].window_under_head_with(3),
                 [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
-        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_first_value(3),
+        assert_eq!((&[1.0, 2.0, 3.0, 4.0, 5.0]).window_under_head_with(3),
                 [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
-        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_first_value(3),
+        assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_head_with(3),
                 [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
     }
