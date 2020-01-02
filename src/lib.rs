@@ -23,5 +23,5 @@ pub trait TrTA {
     fn sma(&self, period: usize) -> Vec<f64>;
 
     // "latest" is the latest calculated SMA values to omit recalculation.
-    fn sma_re(&self, period: usize, begin: usize, latest: &[f64]) -> Vec<f64>;
+    fn sma_re(&self, period: usize, latest: &[f64]) -> Vec<f64>;
 }

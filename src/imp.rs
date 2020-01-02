@@ -60,11 +60,22 @@ impl TrTA for [f64] {
     }
 
     fn sma(&self, period: usize) -> Vec<f64> {
-        vec![0.0]
+        self.sma_re(period, &[])
     }
 
-    fn sma_re(&self, period: usize, begin: usize, latest: &[f64]) -> Vec<f64> {
-        vec![0.0]
+    fn sma_re(&self, period: usize, latest: &[f64]) -> Vec<f64> {
+        let mut v = Vec::with_capacity(self.len());
+
+        if latest.len() == 0 {
+            v = self.window_under_head_with(period)
+                    .into_iter().map(|xs| xs.avg()).collect::<Vec<_>>();
+        } else {
+            v.extend_from_slice(&latest[0 .. latest.len() - 1]);
+            v.extend_from_slice(&(self.window_under_head_with(period))[latest.len() - 1 ..]
+                    .into_iter().map(|xs| xs.avg()).collect::<Vec<_>>());
+        }
+
+        v
     }
 }
 
@@ -146,5 +157,20 @@ mod tests {
         assert_eq!(vec![1.0, 2.0, 3.0, 4.0, 5.0].window_under_head_with(3),
                 [[1.0, 1.0, 1.0], [1.0, 1.0, 2.0],
                 [1.0, 2.0, 3.0], [2.0, 3.0, 4.0], [3.0, 4.0, 5.0]]);
+    }
+
+    #[test]
+    fn test_sma() {
+        assert_eq!([1.0, 4.0, 4.0, 4.0, 7.0].sma(3), [1.0, 2.0, 3.0, 4.0, 5.0]);
+    }
+
+    #[test]
+    fn test_sma_re() {
+        assert_eq!([1.0, 4.0, 4.0, 4.0, 7.0].sma_re(3, &[1.0, 2.0, 3.0, 4.0, 5.0]),
+                [1.0, 2.0, 3.0, 4.0, 5.0]);
+        assert_eq!([1.0, 4.0, 4.0, 4.0, 7.0].sma_re(3, &[2.0, 3.0, 5.0, 7.0, 11.0]),
+                [2.0, 3.0, 5.0, 7.0, 5.0]);
+        assert_eq!([1.0, 4.0, 4.0, 4.0, 7.0].sma_re(3, &[2.0, 3.0, 5.0]),
+                [2.0, 3.0, 3.0, 4.0, 5.0]);
     }
 }
