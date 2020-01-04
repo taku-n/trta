@@ -10,7 +10,7 @@ impl TrTA for [f64] {
     }
 
     fn window(&self, period: usize) -> Vec<Vec<f64>> {
-        let mut v: Vec<Vec<f64>> = Vec::new();
+        let mut v: Vec<Vec<f64>> = Vec::with_capacity(self.len() + 1 - period);
 
         for i in 0..=(self.len() - period) {
             v.push(self.to_vec().into_iter().skip(i).take(period).collect::<Vec<_>>());
