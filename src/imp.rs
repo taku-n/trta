@@ -68,11 +68,11 @@ impl TrTA for [f64] {
 
         if latest.len() == 0 {
             v = self.window_under_head_with(period)
-                    .into_iter().map(|xs| xs.avg()).collect::<Vec<_>>();
+                    .iter().map(|xs| xs.avg()).collect::<Vec<_>>();
         } else {
             v.extend_from_slice(&latest[0 .. latest.len() - 1]);
             v.extend_from_slice(&(self.window_under_head_with(period))[latest.len() - 1 ..]
-                    .into_iter().map(|xs| xs.avg()).collect::<Vec<_>>());
+                    .iter().map(|xs| xs.avg()).collect::<Vec<_>>());
         }
 
         v
